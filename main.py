@@ -1,13 +1,42 @@
 import pygame
 import time
 import random
+
 pygame.init()
 width,height=800,600#screen
-disp=pygame.display.set_mode((width,height))
-pygame.display.set_caption("SNEK")
-green,red,black,white=(0,204,153),(255,8,0),(0,0,0),(255,255,255)
+width1 = 1000
 font_style=pygame.font.SysFont(None,30)
+disp=pygame.display.set_mode((width1,height))
+green,red,black,white=(0,204,153),(255,8,0),(0,0,0),(255,255,255)
+
+def menu():
+    disp=pygame.display.set_mode((width1,height))
+    disp.fill(black)
+    menu_page = pygame.font.SysFont(None,130).render("SNEK",True,green)
+    disp.blit(menu_page,[(width1/2)-140,(height/3)-150])
+
+    rules = [
+        "Rules:",
+        "1.When the snake moving in one direction is made to move in the opposite direction, the game",
+        "   ends.",
+        "2.When the snake touches the edges of the screen, it will continue moving from the opposite",
+        "   side.",
+        "3.The blue food will make the snake move very quickly and make it invulnerable to ",
+        "everything for 5 seconds.",
+        "4.The white food will make the snake move slowly and decrease the score by 3.",
+        "5.When the score reaches 10, the snake will enter into a new level which has barricades. If it ",
+        "   comes in contact with any of these barricades, the snake will die.",
+        "6.Press Q to quit and any other key to continue.",
+            ]
+    for rule in rules:
+        rules_disp = pygame.font.SysFont(None, 30).render(rule,True,white)
+        disp.blit(rules_disp,[(width1/4)-200,(height/3)+(30*rules.index(rule))])
+
+    pygame.display.set_caption("SNEK")
+    pygame.display.update()
+
 def gameloop():
+    disp=pygame.display.set_mode((width,height))
     end=0
     x,y,x1,y1=width/2,height/2,0,0#x,y->head pos;x1,y1->change in pos
     cell=20
@@ -61,6 +90,16 @@ def gameloop():
     disp.blit(f_score,[(width/2)-30,(height/2)+27])
     pygame.display.update()
     time.sleep(2)
-    pygame.quit()
-    quit()
-gameloop()
+    menu()
+
+menu()
+
+while True:
+    for event in pygame.event.get():
+        if event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_q:
+                quit()
+            else:
+                gameloop()
+                
+
