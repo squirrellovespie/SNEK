@@ -17,6 +17,16 @@ pip install -r requirements.txt
 1. Make sure you have python and pygame installed.
 2. Clone and navigate to this repository.
 3. Enter `python main.py` in your command line.
+
+## Controls
+<kbd>↑</kbd> : Move down
+
+<kbd>↓</kbd> : Move up
+
+<kbd>→</kbd> : Move right
+
+<kbd>←</kbd> : Move left
+
 ### Is this project beginner friendly?
 YES!
 ## Maintainer
