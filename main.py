@@ -7,13 +7,23 @@ disp=pygame.display.set_mode((width,height))
 pygame.display.set_caption("SNEK")
 green,red,black,white,grey=(0,204,153),(255,8,0),(0,0,0),(255,255,255), (128, 128, 128)
 font_style=pygame.font.SysFont(None,30)
+cell=20
+
+def get_food_position(width, height, body):
+    while True:
+        food_x=round(random.randrange(0,width-cell)/cell)*cell
+        food_y=round(random.randrange(0,height-cell)/cell)*cell
+
+        if [food_x, food_y] not in body:
+            return food_x, food_y
+
 def gameloop():
     end=0
     x,y,x1,y1=width/2,height/2,0,0#x,y->head pos;x1,y1->change in pos
-    cell=20
     snake_speed=10
     body,blen=[],1
     clk=pygame.time.Clock()
+
     dir = "direction"
 
     food_x=round(random.randrange(0,width-cell)/cell)*cell
@@ -27,6 +37,9 @@ def gameloop():
         brick_y.append(round(random.randrange(0,width-cell)/cell)*cell)
 
 
+
+
+    food_x, food_y= get_food_position(width,height, body)
 
     while not end:
         for event in pygame.event.get():
@@ -81,9 +94,9 @@ def gameloop():
 
 
         if food_x==x and food_y==y:#contact with food
-            food_x=round(random.randrange(0,width-cell)/cell)*cell
-            food_y=round(random.randrange(0,height-cell)/cell)*cell
+            food_x, food_y= get_food_position(width,height, body)
             blen+=1#body length increases
+
             if snake_speed<30: snake_speed+=0.5;
 
         if blen>10:
@@ -91,6 +104,10 @@ def gameloop():
                 if brick_x[i]==x and brick_y[i]==y:
                     end = 1
 
+
+
+            if snake_speed<30:
+                snake_speed+=0.5
 
         clk.tick(snake_speed)#fps
     clk.tick(snake_speed)
