@@ -1,6 +1,10 @@
 import pygame
 import time
 import random
+import pygame_menu
+
+DIFFICULTY = 10
+
 pygame.init()
 width,height=800,600#screen
 disp=pygame.display.set_mode((width,height))
@@ -8,6 +12,11 @@ pygame.display.set_caption("SNEK")
 green,red,black,white=(0,204,153),(255,8,0),(0,0,0),(255,255,255)
 font_style=pygame.font.SysFont(None,30)
 cell=20
+
+def set_difficulty(value, difficulty):
+    global DIFFICULTY
+    DIFFICULTY = difficulty
+    return DIFFICULTY
 
 def get_food_position(width, height, body):
     while True:
@@ -20,7 +29,7 @@ def get_food_position(width, height, body):
 def gameloop():
     end=0
     x,y,x1,y1=width/2,height/2,0,0#x,y->head pos;x1,y1->change in pos
-    snake_speed=10
+    snake_speed=DIFFICULTY
     body,blen=[],1
     clk=pygame.time.Clock()
     food_x, food_y= get_food_position(width,height, body)
@@ -71,4 +80,14 @@ def gameloop():
     time.sleep(2)
     pygame.quit()
     quit()
-gameloop()
+
+if __name__ == "__main__":
+    menu = pygame_menu.Menu('SNEK', 400, 300,
+                       theme=pygame_menu.themes.THEME_SOLARIZED)
+
+    menu.add.selector('Difficulty :', [('Nornal', 10), ('Hard', 24), ('Easy', 5)], onchange=set_difficulty)
+    menu.add.button('Play', gameloop)
+    menu.add.button('Quit', pygame_menu.events.EXIT)
+
+    menu.mainloop(disp)
+    gameloop()
