@@ -89,32 +89,42 @@ def gameloop():
 
         #checks for keyboard inputs....
         for event in pygame.event.get():
+
             if event.type==pygame.QUIT:
                 end=1
             if event.type==pygame.KEYDOWN:
-                if event.key==pygame.K_LEFT and snake_direction!=1:
-                    snake_direction=3
-                    x1,y1=-cell,0
-                elif event.key==pygame.K_UP and snake_direction!=2:
-                    snake_direction=0
-                    x1,y1=-0,-cell
-                elif event.key==pygame.K_RIGHT and snake_direction!=3:
-                    snake_direction=1
-                    x1,y1=cell,0
-                elif event.key==pygame.K_DOWN and snake_direction!=0:
-                    snake_direction=2
-                    x1,y1=0,cell
+
+                if event.key==pygame.K_LEFT:
+                    if x+x1 > x:
+                        x1,y1=cell,0
+                    else:
+                        x1,y1 = -cell,0
+                elif event.key==pygame.K_UP:
+                    if y+y1 > y:
+                        x1,y1=0,cell
+                    else:
+                        x1,y1 = 0,-cell
+                elif event.key==pygame.K_RIGHT:
+                    if x-x1 > x:
+                        x1,y1=-cell,0
+                    else:
+                        x1,y1 = cell,0
+                elif event.key==pygame.K_DOWN:
+                    if y-y1 > y:
+                        x1,y1=0,-cell
+                    else:
+                        x1,y1 = 0,cell
+
         x+=x1;y+=y1
-        
-        if x>width:#screen boundary condition
+        if x>width-cell:#screen boundary condition
             x = 0
         elif x<0:
             x = width
-        elif y > height:
+        elif y > height-cell:
             y = 0
         elif y < 0:
-            y = height 
-        
+            y = height
+
         disp.fill(black)
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
 
@@ -219,13 +229,7 @@ def gameloop():
     disp.blit(f_score,[(width/2)-30,(height/2)+27])
     pygame.display.update()
     time.sleep(2)
-    menu()
-menu()
-
-while True:
-    for event in pygame.event.get():
-        if event.type==pygame.KEYDOWN:
-            if event.key==pygame.K_q:
-                quit()
-            else:
-                gameloop()
+    
+    pygame.quit()
+    quit()
+gameloop()
