@@ -6,7 +6,7 @@ pygame.init()
 width,height=800,600#screen
 disp=pygame.display.set_mode((width,height))
 pygame.display.set_caption("SNEK")
-green,red,black,white=(0,204,153),(255,8,0),(0,0,0),(255,255,255)
+green,red,black,white,blue=(0,204,153),(255,8,0),(0,0,0),(255,255,255),(0,0,255)
 font_style=pygame.font.SysFont(None,30)
 
 def gameloop():
@@ -19,6 +19,14 @@ def gameloop():
 
     food_x=round(random.randrange(0,width-cell)/cell)*cell
     food_y=round(random.randrange(0,height-cell)/cell)*cell
+
+    food_x_blue=round(random.randrange(0,width-cell)/cell)*cell
+    food_y_blue=round(random.randrange(0,height-cell)/cell)*cell
+
+    dis_x=food_x_blue
+    dis_y=food_y_blue
+
+    counter=0
 
     while not end:
         for event in pygame.event.get():
@@ -46,19 +54,21 @@ def gameloop():
                     x1,y1=0,cell
 
         x+=x1;y+=y1
-        # if x>width or x<0 or y>height or y<0:#screen boundary condition
-        #     break
+
         if(x>width):x=0
         if(x<0):x=width
         if(y>height):y=0
-        if(y<0):y=height
-            
+        if(y<0):y=height            
 
         disp.fill(black)
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
+        pygame.draw.rect(disp,blue,[food_x_blue,food_y_blue,cell,cell])
+        
+
         head=[]
         head.append(x);head.append(y)
         body.append(head)#append new head to body
+
         for block in body[:blen-1]:
             if block==head:#snake head touches body
                 end=1
@@ -68,13 +78,28 @@ def gameloop():
             pygame.draw.rect(disp,green,[block[0],block[1],cell,cell])
         score=font_style.render("Score: "+str(blen-1),True,white)
         disp.blit(score,[0,0])
+        if (blen-1)!=0 and (blen-1)%2==0:
+            pygame.draw.rect(disp,black,[dis_x,dis_y,cell,cell])
         pygame.display.update()
+
+
         if food_x==x and food_y==y:#contact with food
             food_x=round(random.randrange(0,width-cell)/cell)*cell
             food_y=round(random.randrange(0,height-cell)/cell)*cell
             blen+=1#body length increases
             if snake_speed<30: snake_speed+=0.5;
+                
+        if food_x_blue==x and food_y_blue==y:#contact with food
+            food_x_blue=round(random.randrange(0,width-cell)/cell)*cell
+            food_y_blue=round(random.randrange(0,height-cell)/cell)*cell
+            blen+=1#body length increases
+            if snake_speed<30: snake_speed+=4.5;
+            for block in body[:blen-1]:
+                if block==head:pass;
+            pygame.time.set_timer(pygame.USEREVENT, 5000)
+            
         clk.tick(snake_speed)#fps
+
     clk.tick(snake_speed)
     disp.fill(black)
     m=font_style.render("Game Over",True,red)
