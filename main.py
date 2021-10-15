@@ -7,13 +7,23 @@ disp=pygame.display.set_mode((width,height))
 pygame.display.set_caption("SNEK")
 green,red,black,white,brown=(0,204,153),(255,8,0),(0,0,0),(255,255,255),(165,42,42)
 font_style=pygame.font.SysFont(None,30)
+cell=20
+
+def get_food_position(width, height, body):
+    while True:
+        food_x=round(random.randrange(0,width-cell)/cell)*cell
+        food_y=round(random.randrange(0,height-cell)/cell)*cell
+
+        if [food_x, food_y] not in body:
+            return food_x, food_y
+
 def gameloop():
     end=0
     x,y,x1,y1=width/2,height/2,0,0#x,y->head pos;x1,y1->change in pos
-    cell=20
     snake_speed=10
     body,blen=[],1
     clk=pygame.time.Clock()
+
     food_x=round(random.randrange(0,width-cell)/cell)*cell
     food_y=round(random.randrange(0,height-cell)/cell)*cell
     obstacle_pos_x = round(random.randrange(0,width-cell)/cell)*cell
@@ -23,43 +33,23 @@ def gameloop():
     obstacle_pos_x2 = round(random.randrange(0,width-cell)/cell)*cell
     obstacle_pos_y2 = round(random.randrange(0,width-cell)/cell)*cell
 
+    food_x, food_y= get_food_position(width,height, body)
     while not end:
         for event in pygame.event.get():
-
             if event.type==pygame.QUIT:
                 end=1
             if event.type==pygame.KEYDOWN:
                 if event.key==pygame.K_LEFT:
-                    if x+x1 > x:
-                        x1,y1=cell,0
-                    else:
-                        x1,y1 = -cell,0
+                    x1,y1=-cell,0
                 elif event.key==pygame.K_UP:
-                    if y+y1 > y:
-                        x1,y1=0,cell
-                    else:
-                        x1,y1 = 0,-cell
+                    x1,y1=-0,-cell
                 elif event.key==pygame.K_RIGHT:
-                    if x-x1 > x:
-                        x1,y1=-cell,0
-                    else:
-                        x1,y1 = cell,0
+                    x1,y1=cell,0
                 elif event.key==pygame.K_DOWN:
-                    if y-y1 > y:
-                        x1,y1=0,-cell
-                    else:
-                        x1,y1 = 0,cell
-
+                    x1,y1=0,cell
         x+=x1;y+=y1
-        if x>width-cell:#screen boundary condition
-            x = 0
-        elif x<0:
-            x = width
-        elif y > height-cell:
-            y = 0
-        elif y < 0:
-            y = height
-
+        if x>width or x<0 or y>height or y<0:#screen boundary condition
+            break
         disp.fill(black)
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
         head=[]
@@ -87,10 +77,10 @@ def gameloop():
         pygame.display.update()
 
         if food_x==x and food_y==y:#contact with food
-            food_x=round(random.randrange(0,width-cell)/cell)*cell
-            food_y=round(random.randrange(0,height-cell)/cell)*cell
+            food_x, food_y= get_food_position(width,height, body)
             blen+=1#body length increases
-            if snake_speed<30: snake_speed+=0.5;
+            if snake_speed<30:
+                snake_speed+=0.5
         clk.tick(snake_speed)#fps
     clk.tick(snake_speed)
     disp.fill(black)
