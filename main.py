@@ -32,9 +32,10 @@ def gameloop():
     food_y=round(random.randrange(0,height-cell)/cell)*cell
 
     white_status,blue_status=0,0
-    block_choose=random.choice([0,1])
-    if block_choose:white_status=1
-    else:blue_status=1
+    block_choose=random.choice([0,1,2])
+    if block_choose==0:white_status=1
+    elif block_choose==1:blue_status=1
+    else :pass
     food_x_white=round(random.randrange(0,width-cell)/cell)*cell
     food_y_white=round(random.randrange(0,height-cell)/cell)*cell
     
@@ -123,14 +124,15 @@ def gameloop():
 
             if red_counter%5==0:
                 #randomizes next block to spawn
-                block_choose=random.choice([0,1])
-                if block_choose:white_status=1
-                else:blue_status=1
+                 block_choose=random.choice([0,1,2])
+                 if block_choose==0:white_status=1
+                 elif block_choose==1:blue_status=1
+                 else :pass
                 
-                food_x_white=round(random.randrange(0,width-cell)/cell)*cell
-                food_y_white=round(random.randrange(0,height-cell)/cell)*cell
-                food_x_blue=round(random.randrange(0,width-cell)/cell)*cell
-                food_y_blue=round(random.randrange(0,height-cell)/cell)*cell
+                 food_x_white=round(random.randrange(0,width-cell)/cell)*cell
+                 food_y_white=round(random.randrange(0,height-cell)/cell)*cell
+                 food_x_blue=round(random.randrange(0,width-cell)/cell)*cell
+                 food_y_blue=round(random.randrange(0,height-cell)/cell)*cell
             if snake_speed<30: snake_speed+=0.5;
 
             if (score_counter+1)%10==0 and score_counter!=0:
@@ -141,8 +143,11 @@ def gameloop():
         elif food_x_white==x and food_y_white==y:
             #contact with food whit
             white_status=0
-            if score_counter>=3:score_counter-=3#reduces score by 3
-            if snake_speed<30: snake_speed-=0.5;#slows the snake down
+            if blen>=4:blen-=3
+            elif score_counter<3:
+                print("check")
+                blen=1#reduces score by 3
+            if snake_speed>30: snake_speed-=0.5;#slows the snake down
         
         elif food_x_blue==x and food_y_blue==y:
             #contact with food blue
@@ -176,7 +181,7 @@ def gameloop():
     disp.fill(black)
     m=font_style.render("Game Over",True,red)
     disp.blit(m,[(width/2)-40,height/2])
-    f_score=font_style.render("Score: "+str(blen-1),True,white)
+    f_score=font_style.render("Score: "+str(score_counter),True,white)
     disp.blit(f_score,[(width/2)-30,(height/2)+27])
     pygame.display.update()
     time.sleep(2)
