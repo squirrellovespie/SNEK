@@ -5,18 +5,47 @@ import random
 #fixed new level
 pygame.init()
 width,height=800,600#screen
-disp=pygame.display.set_mode((width,height))
-pygame.display.set_caption("SNEK")
 green,red,black,white,blue=(0,204,153),(255,8,0),(0,0,0),(255,255,255),(0,0,255)
 font_style=pygame.font.SysFont(None,30)
+width_menu = 800
 
+disp=pygame.display.set_mode((width_menu,height))
+def menu():
+    disp=pygame.display.set_mode((width_menu,height))
+    disp.fill(black)
+    menu_page = pygame.font.SysFont(None,130).render("SNEK",True,green)
+    disp.blit(menu_page,[(width_menu/2)-140,(height/3)-150])
 
+    info = [
+            "INFO:",
+            'Controls are:',
+            '   WASD for moving',
+            ' ',
+            'Levels:Every 10 levels increases difficulty with death boxes',
+            '   BLUE== BUFF(godmode)',
+            '  WHITE== DEBUFF(slow+(-3)score)',
+            ' ',
+            ' ',
+            'PRESS ANY BUTTON TO START',
+            'PRESS Q TO QUIT',
+            'ENJOY!!'
+
+            ]
+    for i in info:
+        info_disp = pygame.font.SysFont(None, 30).render(i,True,white)
+        disp.blit(info_disp,[(width_menu/4)-200,(height/3)+(30*info.index(i))])
+
+    pygame.display.set_caption("SNEK")
+    pygame.display.update()
 
 
 def gameloop():
+    disp=pygame.display.set_mode((width,height))
     end=0
     godmode=0    #basically the variable that decides whether or not ure invincible
 
+    snake_direction=0
+    #0-top 1-right 2-bottom 3-left 
     level=0
     
     x,y,x1,y1=width/2,height/2,0,0#x,y->head pos;x1,y1->change in pos
@@ -50,6 +79,7 @@ def gameloop():
     death_blocks_y=[];
 
     levelup=0
+    snake_direction=0
     while (not end) or godmode:
 
         time_passed=int(time.time()-static_time)
@@ -62,13 +92,17 @@ def gameloop():
             if event.type==pygame.QUIT:
                 end=1
             if event.type==pygame.KEYDOWN:
-                if event.key==pygame.K_LEFT:
+                if event.key==pygame.K_LEFT and snake_direction!=1:
+                    snake_direction=3
                     x1,y1=-cell,0
-                elif event.key==pygame.K_UP:
+                elif event.key==pygame.K_UP and snake_direction!=2:
+                    snake_direction=0
                     x1,y1=-0,-cell
-                elif event.key==pygame.K_RIGHT:
+                elif event.key==pygame.K_RIGHT and snake_direction!=3:
+                    snake_direction=1
                     x1,y1=cell,0
-                elif event.key==pygame.K_DOWN:
+                elif event.key==pygame.K_DOWN and snake_direction!=0:
+                    snake_direction=2
                     x1,y1=0,cell
         x+=x1;y+=y1
         
@@ -185,6 +219,13 @@ def gameloop():
     disp.blit(f_score,[(width/2)-30,(height/2)+27])
     pygame.display.update()
     time.sleep(2)
-    pygame.quit()
-    quit()
-gameloop()
+    menu()
+menu()
+
+while True:
+    for event in pygame.event.get():
+        if event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_q:
+                quit()
+            else:
+                gameloop()
