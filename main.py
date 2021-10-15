@@ -82,7 +82,7 @@ def gameloop():
         if food_bx == x and food_by == y:
             food_bx=round(random.randrange(0,width-cell)/cell)*cell
             food_by=round(random.randrange(0,height-cell)/cell)*cell
-            point = random.randrange(0,3)
+            point = random.randrange(0,4)
             key = 0
             speed = 1
 
