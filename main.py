@@ -32,11 +32,11 @@ def gameloop():
         x+=x1;y+=y1
        # if x>width or x<0 or y>height or y<0:#screen boundary condition
        #     break
-        if y==0:
+        if y<0:
             y=height
         elif y==height:
             y=0
-        elif x==0:
+        elif x<0:
             x=width
         elif x==width:
             x=0
