@@ -2,7 +2,7 @@ import pygame
 import time
 import random
 
-
+#fixed new level
 pygame.init()
 width,height=800,600#screen
 disp=pygame.display.set_mode((width,height))
