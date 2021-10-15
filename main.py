@@ -40,7 +40,7 @@ def gameloop():
         body.append(head)#append new head to body
         for block in body[:blen-1]:
             if block==head:#snake head touches body
-                end=1
+                break
         if len(body)>blen:#snake movement display
             del body[0]
         for block in body:
