@@ -17,26 +17,44 @@ def gameloop():
     food_x=round(random.randrange(0,width-cell)/cell)*cell
     food_y=round(random.randrange(0,height-cell)/cell)*cell
     while not end:
-        for event in pygame.event.get():
-            if event.type==pygame.QUIT:
-                end=1
-            if event.type==pygame.KEYDOWN:
-                if event.key==pygame.K_LEFT:
-                    x1,y1=-cell,0
-                elif event.key==pygame.K_UP:
-                    x1,y1=-0,-cell
-                elif event.key==pygame.K_RIGHT:
-                    x1,y1=cell,0
-                elif event.key==pygame.K_DOWN:
-                    x1,y1=0,cell
-        x+=x1;y+=y1
-        if x>width or x<0 or y>height or y<0:#screen boundary condition
-            break
-        disp.fill(black)
-        pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
         head=[]
         head.append(x);head.append(y)
         body.append(head)#append new head to body
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                end=1
+            if blen>1:
+                ch = body[1]
+                if event.type==pygame.KEYDOWN:
+                    if event.key==pygame.K_LEFT and head[0] - ch[0]<=0:
+                        x1,y1=-cell,0
+                    elif event.key==pygame.K_UP and head[1] - ch[1]<=0:
+                        x1,y1=-0,-cell
+                    elif event.key==pygame.K_RIGHT and head[0] - ch[0]>=0:
+                        x1,y1=cell,0
+                    elif event.key==pygame.K_DOWN and head[1] - ch[1]>=0:
+                        x1,y1=0,cell
+            else:
+                if event.type==pygame.KEYDOWN:
+                    if event.key==pygame.K_LEFT:
+                        x1,y1=-cell,0
+                    elif event.key==pygame.K_UP:
+                        x1,y1=-0,-cell
+                    elif event.key==pygame.K_RIGHT:
+                        x1,y1=cell,0
+                    elif event.key==pygame.K_DOWN:
+                        x1,y1=0,cell
+        x+=x1;y+=y1
+        if x>width: #screen boundary condition
+            x=0
+        if x<0:
+            x=width
+        if y>height:
+            y=0
+        if y<0:
+            y= height
+        disp.fill(black)
+        pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
         for block in body[:blen-1]:
             if block==head:#snake head touches body
                 end=1
