@@ -8,6 +8,7 @@ pygame.display.set_caption("SNEK")
 green,red,black,white=(0,204,153),(255,8,0),(0,0,0),(255,255,255)
 font_style=pygame.font.SysFont(None,30)
 def gameloop():
+    last_key=""
     end=0
     x,y,x1,y1=width/2,height/2,0,0#x,y->head pos;x1,y1->change in pos
     cell=20
@@ -17,18 +18,37 @@ def gameloop():
     food_x=round(random.randrange(0,width-cell)/cell)*cell
     food_y=round(random.randrange(0,height-cell)/cell)*cell
     while not end:
+        opposite=False
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
                 end=1
             if event.type==pygame.KEYDOWN:
                 if event.key==pygame.K_LEFT:
+                    if last_key=="right":
+                        opposite=True
+                        break
                     x1,y1=-cell,0
+                    last_key="left"
                 elif event.key==pygame.K_UP:
+                    if last_key=="down":
+                        opposite=True
+                        break
                     x1,y1=-0,-cell
+                    last_key="up"
                 elif event.key==pygame.K_RIGHT:
+                    if last_key=="left":
+                        opposite=True
+                        break
                     x1,y1=cell,0
+                    last_key="right"
                 elif event.key==pygame.K_DOWN:
+                    if last_key=="up":
+                        opposite=True
+                        break
                     x1,y1=0,cell
+                    last_key="down"
+        if opposite:
+            break
         x+=x1;y+=y1
         if x>width or x<0 or y>height or y<0:#screen boundary condition
             break
