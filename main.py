@@ -10,6 +10,7 @@ green,red,black,white,blue=(0,204,153),(255,8,0),(0,0,0),(255,255,255),(0,0,255)
 font_style=pygame.font.SysFont(None,30)
 
 def gameloop():
+    current_time = pygame.time.get_ticks()
     end=0
     x,y,x1,y1=width/2,height/2,0,0#x,y->head pos;x1,y1->change in pos
     cell=20
@@ -60,11 +61,11 @@ def gameloop():
         if(y>height):y=0
         if(y<0):y=height            
 
+        i=random.randint(1,10)
+
         disp.fill(black)
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
-        pygame.draw.rect(disp,blue,[food_x_blue,food_y_blue,cell,cell])
-        
-
+                 
         head=[]
         head.append(x);head.append(y)
         body.append(head)#append new head to body
@@ -78,6 +79,10 @@ def gameloop():
             pygame.draw.rect(disp,green,[block[0],block[1],cell,cell])
         score=font_style.render("Score: "+str(blen-1),True,white)
         disp.blit(score,[0,0])
+
+        if (blen-1)%4==0:
+            pygame.draw.rect(disp,blue,[food_x_blue,food_y_blue,cell,cell])
+
         if (blen-1)!=0 and (blen-1)%2==0:
             pygame.draw.rect(disp,black,[dis_x,dis_y,cell,cell])
         pygame.display.update()
@@ -88,6 +93,7 @@ def gameloop():
             food_y=round(random.randrange(0,height-cell)/cell)*cell
             blen+=1#body length increases
             if snake_speed<30: snake_speed+=0.5;
+            pygame.draw.rect(disp,blue,[food_x_blue,food_y_blue,cell,cell])
                 
         if food_x_blue==x and food_y_blue==y:#contact with food
             food_x_blue=round(random.randrange(0,width-cell)/cell)*cell
@@ -98,6 +104,7 @@ def gameloop():
                 if block==head:pass;
             pygame.time.set_timer(pygame.USEREVENT, 5000)
             
+               
         clk.tick(snake_speed)#fps
 
     clk.tick(snake_speed)
