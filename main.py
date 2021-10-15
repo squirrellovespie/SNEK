@@ -16,6 +16,24 @@ def gameloop():
     clk=pygame.time.Clock()
     food_x=round(random.randrange(0,width-cell)/cell)*cell
     food_y=round(random.randrange(0,height-cell)/cell)*cell
+    font = pygame.font.SysFont('Time New Roman', 60)
+    #Title Text
+    title = font.render('SNAKE', False, green)
+    titleRect = title.get_rect()
+    titleRect.center = (width//2 , 100)
+    disp.blit(title, titleRect)
+    #High Score Text
+    high =font.render('High Score: ', False, red)
+    highRect = high.get_rect()
+    highRect.center = (width//2, height//2)
+    disp.blit(high, highRect)
+    #Start Text
+    start = font.render('Press Any Key to continue', False, green)
+    startRect = start.get_rect()
+    startRect.center = (width//2 , height - 50)
+    disp.blit(start, startRect)
+    pygame.display.update()
+    time.sleep(2)
     while not end:
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
