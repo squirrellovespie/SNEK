@@ -57,6 +57,13 @@ def gameloop():
     #ill be staying here to annoy u g
     red_counter=0
 
+    #recursive function which returns a non snake body cell
+    def createnewfood(body):
+        y=round(random.randrange(0,height-cell)/cell)*cell
+        x=round(random.randrange(0,width-cell)/cell)*cell
+        if [x,y] not in body:return [x,y]
+        else:return createnewfood
+
     food_x=round(random.randrange(0,width-cell)/cell)*cell
     food_y=round(random.randrange(0,height-cell)/cell)*cell
 
@@ -89,42 +96,33 @@ def gameloop():
 
         #checks for keyboard inputs....
         for event in pygame.event.get():
-
             if event.type==pygame.QUIT:
                 end=1
             if event.type==pygame.KEYDOWN:
-
-                if event.key==pygame.K_LEFT:
-                    if x+x1 > x:
-                        x1,y1=cell,0
-                    else:
-                        x1,y1 = -cell,0
-                elif event.key==pygame.K_UP:
-                    if y+y1 > y:
-                        x1,y1=0,cell
-                    else:
-                        x1,y1 = 0,-cell
-                elif event.key==pygame.K_RIGHT:
-                    if x-x1 > x:
-                        x1,y1=-cell,0
-                    else:
-                        x1,y1 = cell,0
-                elif event.key==pygame.K_DOWN:
-                    if y-y1 > y:
-                        x1,y1=0,-cell
-                    else:
-                        x1,y1 = 0,cell
-
+                if event.key==pygame.K_LEFT and snake_direction!=1:
+                    snake_direction=3
+                    x1,y1=-cell,0
+                elif event.key==pygame.K_UP and snake_direction!=2:
+                    snake_direction=0
+                    x1,y1=-0,-cell
+                elif event.key==pygame.K_RIGHT and snake_direction!=3:
+                    snake_direction=1
+                    x1,y1=cell,0
+                elif event.key==pygame.K_DOWN and snake_direction!=0:
+                    snake_direction=2
+                    x1,y1=0,cell
         x+=x1;y+=y1
+
+        #fixes snake invisible issue
         if x>width-cell:#screen boundary condition
             x = 0
         elif x<0:
             x = width
-        elif y > height-cell:
+        elif y > height:
             y = 0
         elif y < 0:
-            y = height
-
+            y = height 
+        
         disp.fill(black)
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
 
@@ -157,8 +155,7 @@ def gameloop():
         pygame.display.update()
 
         if food_x==x and food_y==y:#contact with food red
-            food_x=round(random.randrange(0,width-cell)/cell)*cell
-            food_y=round(random.randrange(0,height-cell)/cell)*cell
+            food_x,food_y=createnewfood(body)
             blen+=1#body length increases
             red_counter+=1
 
@@ -173,10 +170,8 @@ def gameloop():
                  elif block_choose==1:blue_status=1
                  else :pass
                 
-                 food_x_white=round(random.randrange(0,width-cell)/cell)*cell
-                 food_y_white=round(random.randrange(0,height-cell)/cell)*cell
-                 food_x_blue=round(random.randrange(0,width-cell)/cell)*cell
-                 food_y_blue=round(random.randrange(0,height-cell)/cell)*cell
+                 food_x_white,food_y_white=createnewfood(body)
+                 food_x_blue,food_y_blue=createnewfood(body)
             if snake_speed<30: snake_speed+=0.5;
 
             if (score_counter+1)%10==0 and score_counter!=0:
@@ -213,9 +208,11 @@ def gameloop():
         if(score_counter%10==0 and score_counter!=0 and levelup):
             level+=1
             levelup=0
-            death_blocks_x=[round(random.randrange(0,width-cell)/cell)*cell for i in range(level*4)];
-            death_blocks_y=[round(random.randrange(0,height-cell)/cell)*cell for i in range(level*4)];
-
+            for i in range(level*4):
+                #even death boxes have better spawns now
+                dbx,dby=createnewfood(body)
+                death_blocks_x.append(dbx)
+                death_blocks_y.append(dby)            
         clk.tick(snake_speed)#fps
     
     
@@ -229,7 +226,13 @@ def gameloop():
     disp.blit(f_score,[(width/2)-30,(height/2)+27])
     pygame.display.update()
     time.sleep(2)
-    
-    pygame.quit()
-    quit()
-gameloop()
+    menu()
+menu()
+
+while True:
+    for event in pygame.event.get():
+        if event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_q:
+                quit()
+            else:
+                gameloop()
