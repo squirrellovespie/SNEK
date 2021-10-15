@@ -37,8 +37,16 @@ def gameloop():
 
 
         x+=x1;y+=y1
-        if x>width or x<0 or y>height or y<0:#screen boundary condition
-            break
+        if x>width-cell or x<0 or y>height-cell or y<0:#screen boundary condition
+            if x>width-cell:
+                x=0
+            elif x<0:
+                x = width
+            elif y> height-cell:
+                y = 0
+            elif y<0:
+                y = height
+
         disp.fill(black)
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
         head=[]
