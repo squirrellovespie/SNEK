@@ -24,7 +24,11 @@ def gameloop():
     food_y=round(random.randrange(0,height-cell)/cell)*cell
     blue_x = round(random.randrange(0,width-cell)/cell)*cell
     blue_y = round(random.randrange(0,width-cell)/cell)*cell
+<<<<<<< HEAD
     blue_timer = 3 #random.randint(4,7)
+=======
+    blue_timer = random.randint(4,7)
+>>>>>>> 76b020dfd4c0d73f76e6fa8ce264e50b415014d2
 
 
     while not end:
@@ -113,3 +117,4 @@ def gameloop():
     pygame.quit()
     quit()
 gameloop()
+
