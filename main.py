@@ -17,6 +17,7 @@ def gameloop():
     end=0
     godmode=0    #basically the variable that decides whether or not ure invincible
 
+    level=0
     
     x,y,x1,y1=width/2,height/2,0,0#x,y->head pos;x1,y1->change in pos
     cell=20
@@ -39,11 +40,17 @@ def gameloop():
     food_x_blue=round(random.randrange(0,width-cell)/cell)*cell
     food_y_blue=round(random.randrange(0,height-cell)/cell)*cell
     blue_status=1
-    static_time=time.time()
 
-    while not end or godmode:
-        current_time=time.time()
+    static_time=time.time()
+    death_blocks_x=[];
+    death_blocks_y=[];
+    levelup=0
+    while (not end) or godmode:
+        time_passed=int(time.time()-static_time)
+        print(time_passed)
+       
         score_counter=blen-1
+
         #checks for keyboard inputs....
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
@@ -67,13 +74,18 @@ def gameloop():
 
         #displays white box only if white status is 1
         if white_status:
-            
-            pygame.draw.rect(disp,white,[food_x_white,food_y_white,cell,cell])
+             pygame.draw.rect(disp,white,[food_x_white,food_y_white,cell,cell])
 
-        if blue_status:
-                        
+        #displays blue box only if blue status is 1
+        if blue_status:                        
             pygame.draw.rect(disp,blue,[food_x_blue,food_y_blue,cell,cell])
         
+        #green deathboxes cuz they are posion to snakes
+        for i in range(len(death_blocks_y)):
+            pygame.draw.rect(disp,green,[death_blocks_x[i],death_blocks_y[i],cell,cell])
+
+
+        #snake logic
         head=[]
         head.append(x);head.append(y)
         body.append(head)#append new head to body
@@ -84,7 +96,7 @@ def gameloop():
             del body[0]
         for block in body:
             pygame.draw.rect(disp,green,[block[0],block[1],cell,cell])
-        score=font_style.render("Score: "+str(blen-1),True,white)
+        score=font_style.render("Score: "+str(score_counter),True,white)
         disp.blit(score,[0,0])
         pygame.display.update()
 
@@ -106,13 +118,15 @@ def gameloop():
                 food_x_blue=round(random.randrange(0,width-cell)/cell)*cell
                 food_y_blue=round(random.randrange(0,height-cell)/cell)*cell
             if snake_speed<30: snake_speed+=0.5;
+
+            if score_counter%10==0 and score_counter!=0:
+                levelup=1
+            
         
 
         elif food_x_white==x and food_y_white==y:
-            #contact with food white
-            print("CHECK")
+            #contact with food whit
             white_status=0
-
             if score_counter>=3:score_counter-=3#reduces score by 3
             if snake_speed<30: snake_speed-=0.5;#slows the snake down
         
@@ -120,18 +134,25 @@ def gameloop():
             #contact with food blue
             blue_status=0
             static_time=time.time()
-            print(static_time)
-
+            
             #sets godmode to 1 invincible
             godmode=1
             if snake_speed<30: snake_speed+=1;#speeds up the snake 
 
         #waits for 5 secs turns godmode off
-        if(current_time-static_time==5):godmode=0
+        if time_passed==5:
+            godmode=0
+
+        #each 10 points level increases and 4 death blocks each level are added
+        if(score_counter%10==0 and score_counter!=0 and levelup):
+            level+=1
+            levelup=0
+            death_blocks_x=[round(random.randrange(0,width-cell)/cell)*cell for i in range(level*4)];
+            death_blocks_y=[round(random.randrange(0,height-cell)/cell)*cell for i in range(level*4)];
 
         clk.tick(snake_speed)#fps
     
-
+    
     
     clk.tick(snake_speed)
 
