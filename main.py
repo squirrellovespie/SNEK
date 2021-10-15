@@ -31,25 +31,30 @@ def gameloop():
     food_x=round(random.randrange(0,width-cell)/cell)*cell
     food_y=round(random.randrange(0,height-cell)/cell)*cell
 
-
+    white_status,blue_status=0,0
+    block_choose=random.choice([0,1])
+    if block_choose:white_status=1
+    else:blue_status=1
     food_x_white=round(random.randrange(0,width-cell)/cell)*cell
     food_y_white=round(random.randrange(0,height-cell)/cell)*cell
-    white_status=1
+    
 
 
     food_x_blue=round(random.randrange(0,width-cell)/cell)*cell
     food_y_blue=round(random.randrange(0,height-cell)/cell)*cell
-    blue_status=1
+    
 
     static_time=time.time()
     death_blocks_x=[];
     death_blocks_y=[];
+
     levelup=0
     while (not end) or godmode:
+
         time_passed=int(time.time()-static_time)
-        print(time_passed)
-       
-        score_counter=blen-1
+        
+        #to test new level change score counter =10
+        score_counter=10 
 
         #checks for keyboard inputs....
         for event in pygame.event.get():
@@ -67,7 +72,7 @@ def gameloop():
         x+=x1;y+=y1
         
         if x>width or x<0 or y>height or y<0:#screen boundary condition
-            break
+            end=1
 
         disp.fill(black)
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
@@ -138,6 +143,9 @@ def gameloop():
             #sets godmode to 1 invincible
             godmode=1
             if snake_speed<30: snake_speed+=1;#speeds up the snake 
+
+        for i in range(len(death_blocks_y)):
+            if(death_blocks_x[i]==x and death_blocks_y[i]==y):end=1
 
         #waits for 5 secs turns godmode off
         if time_passed==5:
