@@ -63,7 +63,7 @@ def gameloop():
             pygame.draw.rect(disp,blue,[blue_x,blue_y,cell,cell])
             round1 += 1
             if round1 >100:
-                round = 0
+                round1 = 0
                 blue_life2 = blen
 
 
