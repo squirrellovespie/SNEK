@@ -2,10 +2,12 @@ import pygame
 import time
 import random
 
+from pygame.constants import K_DOWN, K_SPACE, KEYDOWN
+
 #fixed new level
 pygame.init()
 width,height=800,600#screen
-green,red,black,white,blue=(0,204,153),(255,8,0),(0,0,0),(255,255,255),(0,0,255)
+green,red,black,white,blue,yellow=(0,204,153),(255,8,0),(0,0,0),(255,255,255),(0,0,255),(255,255,0)
 font_style=pygame.font.SysFont(None,30)
 width_menu = 800
 
@@ -72,6 +74,8 @@ def gameloop():
     if block_choose==0:white_status=1
     elif block_choose==1:blue_status=1
     else :pass
+
+
     food_x_white=round(random.randrange(0,width-cell)/cell)*cell
     food_y_white=round(random.randrange(0,height-cell)/cell)*cell
     
@@ -82,11 +86,25 @@ def gameloop():
     
 
     static_time=time.time()
-    death_blocks_x=[];
-    death_blocks_y=[];
+    death_blocks_x=[20];
+    death_blocks_y=[20];
+
+
+    bullet_blocks=[];
 
     levelup=0
     snake_direction=0
+
+    def removebullets(bullet_blocks):
+        if bullet_blocks==[]:return bullet_blocks
+        else:
+            remains=[]
+            for i in bullet_blocks:
+                if(0<=i[0]<=900 and 0<=i[1]<=600):
+                    remains.append(i)
+            return remains
+    double_flag=0
+
     while (not end) or godmode:
 
         time_passed=int(time.time()-static_time)
@@ -111,8 +129,21 @@ def gameloop():
                 elif event.key==pygame.K_DOWN and snake_direction!=0:
                     snake_direction=2
                     x1,y1=0,cell
-        x+=x1;y+=y1
+                elif event.key==pygame.K_SPACE:
+                    bullet_blocks.append([x,y,snake_direction])
+                    if snake_direction==0:bullet_blocks.append([x,y+5,snake_direction])
+                    if snake_direction==1:bullet_blocks.append([x+5,y,snake_direction])
+                    if snake_direction==2:bullet_blocks.append([x,y-5,snake_direction])
+                    if snake_direction==3:bullet_blocks.append([x-5,y,snake_direction])
 
+                    
+        
+        x+=x1;y+=y1
+        
+        
+
+
+        
         #fixes snake invisible issue
         if x>width-cell:#screen boundary condition
             x = 0
@@ -138,6 +169,10 @@ def gameloop():
         for i in range(len(death_blocks_y)):
             pygame.draw.rect(disp,green,[death_blocks_x[i],death_blocks_y[i],cell,cell])
 
+
+        #displays bullets
+        for i in bullet_blocks:
+            pygame.draw.rect(disp,yellow,[i[0],i[1],cell,cell])
 
         #snake logic
         head=[]
@@ -213,8 +248,35 @@ def gameloop():
                 dbx,dby=createnewfood(body)
                 death_blocks_x.append(dbx)
                 death_blocks_y.append(dby)            
+        
+
+        #bullet collisions:
+        bx_arr=[i[0] for i in bullet_blocks]
+        by_arr=[i[1] for i in bullet_blocks]
+        zip_bx=list(zip(death_blocks_x,death_blocks_y))
+       
+        #
+        for i in range(len(bullet_blocks)):
+            if (bx_arr[i],by_arr[i]) in list(zip(death_blocks_x,death_blocks_y)):
+                death_blocks_x.remove(bx_arr[i])
+                death_blocks_y.remove(by_arr[i])
+                
+
+
+        #moves bullets
+        for i in bullet_blocks:
+            if i[2]==0:
+                i[1]-=3*snake_speed
+            elif i[2]==1:
+                i[0]+=3*snake_speed
+            elif i[2]==2:
+                i[1]+=3*snake_speed
+            elif i[2]==3:
+                i[0]-=3*snake_speed
+
+        bullet_blocks=removebullets(bullet_blocks)
+             
         clk.tick(snake_speed)#fps
-    
     
     
     clk.tick(snake_speed)
