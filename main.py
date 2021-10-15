@@ -14,6 +14,7 @@ def gameloop():
     snake_speed=10
     body,blen=[],1
     clk=pygame.time.Clock()
+    dir = "direction"
     food_x=round(random.randrange(0,width-cell)/cell)*cell
     food_y=round(random.randrange(0,height-cell)/cell)*cell
     while not end:
@@ -21,14 +22,20 @@ def gameloop():
             if event.type==pygame.QUIT:
                 end=1
             if event.type==pygame.KEYDOWN:
-                if event.key==pygame.K_LEFT:
+                if event.key==pygame.K_LEFT and dir not in ["right"]:
                     x1,y1=-cell,0
-                elif event.key==pygame.K_UP:
+                    dir = "left"
+                elif event.key==pygame.K_UP and dir not in ["down"]:
                     x1,y1=-0,-cell
-                elif event.key==pygame.K_RIGHT:
+                    dir = "up"
+                elif event.key==pygame.K_RIGHT and dir not in ["left"]:
                     x1,y1=cell,0
-                elif event.key==pygame.K_DOWN:
+                    dir = "right"
+                elif event.key==pygame.K_DOWN and dir not in ["up"]:
                     x1,y1=0,cell
+                    dir = "down"
+
+
         x+=x1;y+=y1
         if x>width or x<0 or y>height or y<0:#screen boundary condition
             break
