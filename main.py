@@ -54,7 +54,7 @@ def gameloop():
         time_passed=int(time.time()-static_time)
         
         #to test new level change score counter =10
-        score_counter=10 
+        score_counter=blen-1
 
         #checks for keyboard inputs....
         for event in pygame.event.get():
@@ -71,9 +71,15 @@ def gameloop():
                     x1,y1=0,cell
         x+=x1;y+=y1
         
-        if x>width or x<0 or y>height or y<0:#screen boundary condition
-            end=1
-
+        if x>width:#screen boundary condition
+            x = 0
+        elif x<0:
+            x = width
+        elif y > height:
+            y = 0
+        elif y < 0:
+            y = height 
+        
         disp.fill(black)
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
 
