@@ -2,6 +2,9 @@ import pygame
 import time
 import random
 pygame.init()
+pygame.mixer.init()
+EAT_SOUND = pygame.mixer.Sound('./add.mp3')
+END_SOUND = pygame.mixer.Sound('./end.mp3')
 width,height=800,600#screen
 disp=pygame.display.set_mode((width,height))
 pygame.display.set_caption("SNEK")
@@ -58,6 +61,7 @@ def gameloop():
             food_x=round(random.randrange(0,width-cell)/cell)*cell
             food_y=round(random.randrange(0,height-cell)/cell)*cell
             blen+=1#body length increases
+            EAT_SOUND.play()
             if snake_speed<30: snake_speed+=0.5;
             if(blen % 10 == 1):
                 level += 1
@@ -65,6 +69,7 @@ def gameloop():
     clk.tick(snake_speed)
     disp.fill(black)
     m=font_style.render("Game Over",True,red)
+    END_SOUND.play()
     disp.blit(m,[(width/2)-40,height/2])
     f = open("score.txt","a")
     f.write(str(blen-1)+"\n")
