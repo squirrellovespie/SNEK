@@ -1,12 +1,14 @@
 import pygame
 import time
 import random
+
 pygame.init()
 width,height=800,600#screen
 disp=pygame.display.set_mode((width,height))
 pygame.display.set_caption("SNEK")
 green,red,black,white=(0,204,153),(255,8,0),(0,0,0),(255,255,255)
 font_style=pygame.font.SysFont(None,30)
+
 def gameloop():
     end=0
     x,y,x1,y1=width/2,height/2,0,0#x,y->head pos;x1,y1->change in pos
@@ -14,13 +16,16 @@ def gameloop():
     snake_speed=10
     body,blen=[],1
     clk=pygame.time.Clock()
+
     food_x=round(random.randrange(0,width-cell)/cell)*cell
     food_y=round(random.randrange(0,height-cell)/cell)*cell
+
     while not end:
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
                 end=1
-            if event.type==pygame.KEYDOWN:
+
+            if event.type==pygame.KEYDOWN and len(body)==1:
                 if event.key==pygame.K_LEFT:
                     x1,y1=-cell,0
                 elif event.key==pygame.K_UP:
@@ -29,6 +34,17 @@ def gameloop():
                     x1,y1=cell,0
                 elif event.key==pygame.K_DOWN:
                     x1,y1=0,cell
+
+            if event.type==pygame.KEYDOWN and len(body)>1:
+                if event.key==pygame.K_LEFT and (x1 != cell):
+                    x1,y1=-cell,0
+                elif event.key==pygame.K_UP and (y1 != cell):
+                    x1,y1=-0,-cell
+                elif event.key==pygame.K_RIGHT and (x1 != -cell):
+                    x1,y1=cell,0
+                elif event.key==pygame.K_DOWN and (y1 != -cell):
+                    x1,y1=0,cell
+
         x+=x1;y+=y1
         if x>width or x<0 or y>height or y<0:#screen boundary condition
             break
