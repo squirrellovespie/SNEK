@@ -47,8 +47,6 @@ def gameloop():
                         break
                     x1,y1=0,cell
                     last_key="down"
-        if opposite:
-            break
         x+=x1;y+=y1
         if x>width or x<0 or y>height or y<0:#screen boundary condition
             break
@@ -58,7 +56,7 @@ def gameloop():
         head.append(x);head.append(y)
         body.append(head)#append new head to body
         for block in body[:blen-1]:
-            if block==head:#snake head touches body
+            if block==head and opposite==False:#snake head touches body
                 end=1
         if len(body)>blen:#snake movement display
             del body[0]
