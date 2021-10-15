@@ -26,20 +26,41 @@ def gameloop():
     food_x, food_y= get_food_position(width,height, body)
     while not end:
         for event in pygame.event.get():
+
             if event.type==pygame.QUIT:
                 end=1
             if event.type==pygame.KEYDOWN:
                 if event.key==pygame.K_LEFT:
-                    x1,y1=-cell,0
+                    if x+x1 > x:
+                        x1,y1=cell,0
+                    else:
+                        x1,y1 = -cell,0
                 elif event.key==pygame.K_UP:
-                    x1,y1=-0,-cell
+                    if y+y1 > y:
+                        x1,y1=0,cell
+                    else:
+                        x1,y1 = 0,-cell
                 elif event.key==pygame.K_RIGHT:
-                    x1,y1=cell,0
+                    if x-x1 > x:
+                        x1,y1=-cell,0
+                    else:
+                        x1,y1 = cell,0
                 elif event.key==pygame.K_DOWN:
-                    x1,y1=0,cell
+                    if y-y1 > y:
+                        x1,y1=0,-cell
+                    else:
+                        x1,y1 = 0,cell
+
         x+=x1;y+=y1
-        if x>width or x<0 or y>height or y<0:#screen boundary condition
-            break
+        if x>width-cell:#screen boundary condition
+            x = 0
+        elif x<0:
+            x = width
+        elif y > height-cell:
+            y = 0
+        elif y < 0:
+            y = height
+
         disp.fill(black)
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
         head=[]
@@ -72,4 +93,3 @@ def gameloop():
     pygame.quit()
     quit()
 gameloop()
-
