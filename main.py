@@ -122,15 +122,18 @@ def gameloop():
                 blue_status=0 #white food dissapears when 2
 
             if red_counter%5==0:
-                white_status=1
-                blue_status=1
+                #randomizes next block to spawn
+                block_choose=random.choice([0,1])
+                if block_choose:white_status=1
+                else:blue_status=1
+                
                 food_x_white=round(random.randrange(0,width-cell)/cell)*cell
                 food_y_white=round(random.randrange(0,height-cell)/cell)*cell
                 food_x_blue=round(random.randrange(0,width-cell)/cell)*cell
                 food_y_blue=round(random.randrange(0,height-cell)/cell)*cell
             if snake_speed<30: snake_speed+=0.5;
 
-            if score_counter%10==0 and score_counter!=0:
+            if (score_counter+1)%10==0 and score_counter!=0:
                 levelup=1
             
         
