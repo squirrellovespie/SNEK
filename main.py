@@ -5,7 +5,7 @@ pygame.init()
 width,height=800,600#screen
 disp=pygame.display.set_mode((width,height))
 pygame.display.set_caption("SNEK")
-green,red,black,white=(0,204,153),(255,8,0),(0,0,0),(255,255,255)
+green,red,black,white,brown=(0,204,153),(255,8,0),(0,0,0),(255,255,255),(165,42,42)
 font_style=pygame.font.SysFont(None,30)
 def gameloop():
     end=0
@@ -16,6 +16,13 @@ def gameloop():
     clk=pygame.time.Clock()
     food_x=round(random.randrange(0,width-cell)/cell)*cell
     food_y=round(random.randrange(0,height-cell)/cell)*cell
+    obstacle_pos_x = round(random.randrange(0,width-cell)/cell)*cell
+    obstacle_pos_y = round(random.randrange(0,width-cell)/cell)*cell
+    obstacle_pos_x1 = round(random.randrange(0,width-cell)/cell)*cell
+    obstacle_pos_y1 = round(random.randrange(0,width-cell)/cell)*cell
+    obstacle_pos_x2 = round(random.randrange(0,width-cell)/cell)*cell
+    obstacle_pos_y2 = round(random.randrange(0,width-cell)/cell)*cell
+
     while not end:
         for event in pygame.event.get():
 
@@ -67,7 +74,18 @@ def gameloop():
             pygame.draw.rect(disp,green,[block[0],block[1],cell,cell])
         score=font_style.render("Score: "+str(blen-1),True,white)
         disp.blit(score,[0,0])
+        if blen - 1 >= 10:
+            pygame.draw.rect(disp,white,[obstacle_pos_x,obstacle_pos_y,cell,cell])
+            pygame.draw.rect(disp,white,[obstacle_pos_x1,obstacle_pos_y1,cell,cell])
+            pygame.draw.rect(disp,white,[obstacle_pos_x2,obstacle_pos_y2,cell,cell])
+            if obstacle_pos_x == x and obstacle_pos_y ==y:
+                end=1
+            elif obstacle_pos_x1 == x and obstacle_pos_y1 ==y:
+                end=1
+            elif obstacle_pos_x2 == x and obstacle_pos_y2 ==y:
+                end=1
         pygame.display.update()
+
         if food_x==x and food_y==y:#contact with food
             food_x=round(random.randrange(0,width-cell)/cell)*cell
             food_y=round(random.randrange(0,height-cell)/cell)*cell
