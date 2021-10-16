@@ -22,6 +22,7 @@ def gameloop():
     x,y,x1,y1=width/2,height/2,0,0#x,y->head pos;x1,y1->change in pos
     snake_speed=10
     body,blen=[],1
+    vulnerable = 0
     clk=pygame.time.Clock()
 
     dir = "direction"
@@ -29,15 +30,12 @@ def gameloop():
     food_x=round(random.randrange(0,width-cell)/cell)*cell
     food_y=round(random.randrange(0,height-cell)/cell)*cell
 
-    brick_x = []
-    for i in range(0,5):
-        brick_x.append(round(random.randrange(0,width-cell)/cell)*cell)
-    brick_y = []
-    for i in range(0,5):
-        brick_y.append(round(random.randrange(0,width-cell)/cell)*cell)
 
-
-
+    white_life = 0
+    white_life2 = 0
+    white_x = round(random.randrange(0,width-cell)/cell)*cell
+    white_y = round(random.randrange(0,width-cell)/cell)*cell
+    round1 = 0
 
     food_x, food_y= get_food_position(width,height, body)
 
@@ -78,6 +76,17 @@ def gameloop():
             for i in range(0,5):
                 pygame.draw.rect(disp,grey,[brick_x[i],brick_y[i],cell,cell])
 
+        if blen - white_life == 3:
+            white_x=round(random.randrange(0,width-cell)/cell)*cell
+            white_y=round(random.randrange(0,height-cell)/cell)*cell
+            white_life = blen
+
+        elif blen - white_life2 > 4:
+            pygame.draw.rect(disp,white,[white_x,white_y,cell,cell])
+            round1 += 1
+            if round1 >100:
+                round1 = 0
+
         head=[]
         head.append(x);head.append(y)
         body.append(head)#append new head to body
@@ -99,17 +108,25 @@ def gameloop():
 
             if snake_speed<30: snake_speed+=0.5;
 
-        if blen>10:
-            for i in range(0,5):
-                if brick_x[i]==x and brick_y[i]==y:
-                    end = 1
+
+        if white_x == x and white_y == y:
+            white_x=round(random.randrange(0,width-cell)/cell)*cell
+            white_y=round(random.randrange(0,height-cell)/cell)*cell
+            white_life = blen
+            white_life2 = blen
+            vulnerable = 50
+
+        if vulnerable > 0:
+            clk.tick(snake_speed-5)#fps
+            vulnerable -= 1
+        else:
+            clk.tick(snake_speed)
+
+        if vulnerable == 48:
+            blen = blen - 3
+            print(blen)
 
 
-
-            if snake_speed<30:
-                snake_speed+=0.5
-
-        clk.tick(snake_speed)#fps
     clk.tick(snake_speed)
     disp.fill(black)
     m=font_style.render("Game Over",True,red)
