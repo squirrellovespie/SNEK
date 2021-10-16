@@ -71,8 +71,8 @@ def gameloop():
     food_y=round(random.randrange(0,height-cell)/cell)*cell
 
     power_status,white_status,blue_status=0,0,0
-    block_choose=random.choice([0,1,2,3])
-    block_choose=2 
+    block_choose=random.choice([0,1,2])
+    #block_choose=2 
     #uncomment above to test quickly 
     if block_choose==0:white_status=1
     elif block_choose==1:blue_status=1
@@ -157,10 +157,10 @@ def gameloop():
             x = 0
         elif x<0:
             x = width
-        elif y > height:
+        elif y > height-cell:
             y = 0
-        elif y < 0+cell:
-            y = height 
+        elif y < 0:
+            y = height-cell 
         
         disp.fill(black)
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
@@ -186,8 +186,6 @@ def gameloop():
         for i in range(len(death_blocks_y)):
             pygame.draw.rect(disp,green,[death_blocks_x[i],death_blocks_y[i],cell,cell])
 
-
-
         #displays bullets
         for i in bullet_blocks:
             pygame.draw.rect(disp,yellow,[i[0],i[1],cell,cell])
@@ -195,6 +193,7 @@ def gameloop():
         #displays extra food
         for i in power_blocks:
             pygame.draw.rect(disp,dyna_color,[i[0],i[1],cell,cell])
+
         #snake logic
         head=[]
         head.append(x);head.append(y)
@@ -223,7 +222,7 @@ def gameloop():
             if red_counter%5==0:
                 #randomizes next block to spawn
                 power_status,white_status,blue_status=0,0,0
-                block_choose=random.choice([0,1,2,3])
+                block_choose=random.choice([0,1,2])
 
                 #block_choose=2 uncomment this to check
                 if block_choose==0:white_status=1
@@ -282,7 +281,9 @@ def gameloop():
         if time_passed==5:
             power_mode=0
             godmode=0
-
+        
+        #fixes godmode
+        if godmode:end=0
         #each 10 points level increases and 4 death blocks each level are added
         if(score_counter%10==0 and score_counter!=0 and levelup):
             level+=1
@@ -294,17 +295,18 @@ def gameloop():
                 death_blocks_y.append(dby)            
         
 
-        #bullet collisions:
-        bx_arr=[i[0] for i in bullet_blocks]
-        by_arr=[i[1] for i in bullet_blocks]
-        zip_bx=list(zip(death_blocks_x,death_blocks_y))
-       
-        #
-        for i in range(len(bullet_blocks)):
-            if (bx_arr[i],by_arr[i]) in list(zip(death_blocks_x,death_blocks_y)):
-                death_blocks_x.remove(bx_arr[i])
-                death_blocks_y.remove(by_arr[i])
-                
+        #bullet collision    
+        for i in bullet_blocks:
+            count=0
+            while count<len(death_blocks_x):
+
+                #defining hitboxes to fix issue
+                if(death_blocks_x[count]-5<=i[0]<=death_blocks_y[count]+5+cell and death_blocks_x[count]-5<=i[1]<=death_blocks_y[count]+5+cell):
+                    death_blocks_x.pop(count)
+                    death_blocks_y.pop(count)
+                    break
+                count+=1
+            
 
 
         #moves bullets
