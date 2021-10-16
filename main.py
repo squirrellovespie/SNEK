@@ -7,7 +7,7 @@ from pygame.constants import K_DOWN, K_SPACE, KEYDOWN
 #fixed new level
 pygame.init()
 width,height=800,600#screen
-green,red,black,white,blue,yellow=(0,204,153),(255,8,0),(0,0,0),(255,255,255),(0,0,255),(255,255,0)
+green,red,black,white,blue,yellow,pink=(0,204,153),(255,8,0),(0,0,0),(255,255,255),(0,0,255),(255,255,0),(255,182,193)
 font_style=pygame.font.SysFont(None,30)
 width_menu = 800
 
@@ -24,7 +24,7 @@ def menu():
             '   WASD for moving',
             '   SPACEBAR for SHOOTING',
             ' ',
-            'Levels:Every 10 levels increases difficulty with death boxes',
+            'Levels:Every 10 levels increases difficulty with pink death boxes',
             '   BLUE== BUFF(godmode)',
             '  WHITE== DEBUFF(slow+(-3)score)',
             '  PARTY== FREE POINTS!!! ',
@@ -65,7 +65,7 @@ def gameloop():
         y=round(random.randrange(0,height-cell)/cell)*cell
         x=round(random.randrange(0,width-cell)/cell)*cell
         if [x,y] not in body:return [x,y]
-        else:return createnewfood
+        else:return createnewfood(body)
 
     food_x=round(random.randrange(0,width-cell)/cell)*cell
     food_y=round(random.randrange(0,height-cell)/cell)*cell
@@ -181,9 +181,9 @@ def gameloop():
 
 
 
-        #green deathboxes cuz they are posion to snakes
-        #for i in range(len(death_blocks_y)):
-            #pygame.draw.rect(disp,green,[death_blocks_x[i],death_blocks_y[i],cell,cell])
+        #pink deathboxes cuz they are posion to snakes
+        for i in range(len(death_blocks_y)):
+            pygame.draw.rect(disp,pink,[death_blocks_x[i],death_blocks_y[i],cell,cell])
 
         #displays bullets
         for i in bullet_blocks:
@@ -273,6 +273,8 @@ def gameloop():
 
         if power_mode==0:power_blocks=[]
 
+        for i in range(len(death_blocks_y)):
+            if(death_blocks_x[i]==x and death_blocks_y[i]==y):end=1
 
         #waits for 5 secs turns godmode off
         if time_passed==5:
