@@ -166,7 +166,7 @@ def gameloop():
 
         if bullet == True:
             for i in range(0,5):
-                if bullet_x == brick_x[i] and bullet_y == brick_y[i]:
+                if (bullet_x == brick_x[i] or bullet_x-cell == brick_x[i]) and (bullet_y == brick_y[i] or bullet_y-cell == brick_y[i]):
                     brick_x[i] = round(random.randrange(0,width-cell)/cell)*cell
                     brick_y[i] = round(random.randrange(0,height-cell)/cell)*cell
                     bullet = False
