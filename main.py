@@ -1,19 +1,29 @@
 import pygame
 import time
 import random
+import tkinter as tk
+
+
 pygame.init()
 pygame.mixer.init()
 EAT_SOUND = pygame.mixer.Sound('./add.mp3')
 END_SOUND = pygame.mixer.Sound('./end.mp3')
 width,height=800,600#screen
-disp=pygame.display.set_mode((width,height))
-pygame.display.set_caption("SNEK")
+c = True
 
 green,red,black,white,grey=(0,204,153),(255,8,0),(0,0,0),(255,255,255), (128, 128, 128)
 
 
 font_style=pygame.font.SysFont(None,30)
 cell=20
+
+def exit():
+    root.destroy
+    pygame.quit()
+    quit()
+    c = False
+
+
 
 def get_food_position(width, height, body):
     while True:
@@ -24,6 +34,8 @@ def get_food_position(width, height, body):
             return food_x, food_y
 
 def gameloop():
+    disp=pygame.display.set_mode((width,height))
+    pygame.display.set_caption("SNEK")
     end=0
     x,y,x1,y1=width/2,height/2,0,0#x,y->head pos;x1,y1->change in pos
     snake_speed=10
@@ -79,9 +91,6 @@ def gameloop():
         disp.fill(black)
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
 
-        if blen > 10:
-            for i in range(0,5):
-                pygame.draw.rect(disp,grey,[brick_x[i],brick_y[i],cell,cell])
 
         if blen - white_life == 3:
             white_x=round(random.randrange(0,width-cell)/cell)*cell
@@ -153,6 +162,49 @@ def gameloop():
     disp.blit(f_hscore,[(width/2)-50,(height/2)+50])
     pygame.display.update()
     time.sleep(2)
-    pygame.quit()
-    quit()
-gameloop()
+
+while c == True:
+    root = tk.Tk()
+    root.geometry("600x300")
+    b = tk.Button(root, text = "Click here to Start", command=root.destroy)
+    var = tk.StringVar()
+    var1 = tk.StringVar()
+    var2 = tk.StringVar()
+    var3 = tk.StringVar()
+    var4 = tk.StringVar()
+    var5 = tk.StringVar()
+    label = tk.Label( root, textvariable=var)
+    label1 = tk.Label( root, textvariable=var1)
+    label2 = tk.Label( root, textvariable=var2)
+    label3 = tk.Label( root, textvariable=var3)
+    label4 = tk.Label( root, textvariable=var4)
+    label5 = tk.Label( root, textvariable=var5)
+
+    var.set("Rules:")
+    var1.set("Press any key to start")
+    var2.set("The Blue food makes you invulnerable for 5 seconds and increases your speed")
+    var3.set("The WHite food slows you down and reduces your score by 3")
+    var4.set("The red food increases your speed by a little")
+    var5.set("Once you reach a score of 10 brick appear that you are supposed to dodge")
+    label.pack()
+    label1.pack()
+    label2.pack()
+    label3.pack()
+    label4.pack()
+    label5.pack()
+    b.pack()
+    root.mainloop()
+
+    gameloop()
+
+    root = tk.Tk()
+    root.geometry("300x400")
+    r = tk.Button(root, text = "exit", command=exit)
+    var = tk.StringVar()
+    label = tk.Label( root, textvariable=var)
+
+    var.set("Thanks for playing")
+    label.pack()
+    r.pack()
+    b.pack()
+    root.mainloop()
