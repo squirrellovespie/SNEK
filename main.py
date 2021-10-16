@@ -11,18 +11,23 @@ END_SOUND = pygame.mixer.Sound('./end.mp3')
 width,height=800,600#screen
 c = True
 
-green,red,black,white,grey=(0,204,153),(255,8,0),(0,0,0),(255,255,255), (128, 128, 128)
+green,red,black,white,grey, brown=(0,204,153),(255,8,0),(0,0,0),(255,255,255), (128, 128, 128), (165, 42, 42)
 
 
 font_style=pygame.font.SysFont(None,30)
 cell=20
+bullet = False
 
 def exit():
-    root.destroy
     pygame.quit()
     quit()
     c = False
-
+brick_x = []
+for i in range(0,5):
+    brick_x.append(round(random.randrange(0,width-cell)/cell)*cell)
+brick_y = []
+for i in range(0,5):
+    brick_y.append(round(random.randrange(0,height-cell)/cell)*cell)
 
 
 def get_food_position(width, height, body):
@@ -33,7 +38,14 @@ def get_food_position(width, height, body):
         if [food_x, food_y] not in body:
             return food_x, food_y
 
+
+
+
+
+
+
 def gameloop():
+    bullet = False
     disp=pygame.display.set_mode((width,height))
     pygame.display.set_caption("SNEK")
     end=0
@@ -63,6 +75,20 @@ def gameloop():
             if event.type==pygame.QUIT:
                 end=1
             if event.type==pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    bullet_x = x
+                    bullet_y = y
+                    bullet = True
+                    if dir == "right":
+                        x2,y2=2*cell,0
+                    if dir == "left":
+                        x2, y2 = -2*cell,0
+                    if dir == "up":
+                        x2,y2=-0,-2*cell
+                    if dir == "down":
+                        x2, y2 = -0, 2*cell
+
+
                 if event.key==pygame.K_LEFT and dir not in ["right"]:
                     x1,y1=-cell,0
                     dir = "left"
@@ -75,9 +101,11 @@ def gameloop():
                 elif event.key==pygame.K_DOWN and dir not in ["up"]:
                     x1,y1=0,cell
                     dir = "down"
-
+        if bullet == True:
+            bullet_x+=x2;bullet_y+=y2
 
         x+=x1;y+=y1
+
         if x>width-cell or x<0 or y>height-cell or y<0:#screen boundary condition
             if x>width-cell:
                 x=0
@@ -91,6 +119,12 @@ def gameloop():
         disp.fill(black)
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
 
+        for i in range(0,5):
+            if blen > 3:
+                pygame.draw.rect(disp,grey,[brick_x[i],brick_y[i],cell,cell])
+
+        if bullet == True:
+            pygame.draw.rect(disp,brown,[bullet_x,bullet_y,cell,cell])
 
         if blen - white_life == 3:
             white_x=round(random.randrange(0,width-cell)/cell)*cell
@@ -124,6 +158,18 @@ def gameloop():
 
             if snake_speed<30: snake_speed+=0.5;
 
+        for i in range(0,5):
+            if blen>3:
+                if brick_x[i] == x and brick_y[i] == y:
+                    end =1
+
+
+        if bullet == True:
+            for i in range(0,5):
+                if bullet_x == brick_x[i] and bullet_y == brick_y[i]:
+                    brick_x[i] = round(random.randrange(0,width-cell)/cell)*cell
+                    brick_y[i] = round(random.randrange(0,height-cell)/cell)*cell
+                    bullet = False
 
         if white_x == x and white_y == y:
             white_x=round(random.randrange(0,width-cell)/cell)*cell
@@ -206,5 +252,4 @@ while c == True:
     var.set("Thanks for playing")
     label.pack()
     r.pack()
-    b.pack()
     root.mainloop()
