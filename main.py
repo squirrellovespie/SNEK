@@ -48,9 +48,9 @@ def gameloop():
     godmode=0    #basically the variable that decides whether or not ure invincible
 
     snake_direction=0
-    #0-top 1-right 2-bottom 3-left 
+    #0-top 1-right 2-bottom 3-left
     level=0
-    
+
     x,y,x1,y1=width/2,height/2,0,0#x,y->head pos;x1,y1->change in pos
     cell=20
     snake_speed=10
@@ -72,8 +72,8 @@ def gameloop():
 
     power_status,white_status,blue_status=0,0,0
     block_choose=random.choice([0,1,2])
-    #block_choose=2 
-    #uncomment above to test quickly 
+    #block_choose=2
+    #uncomment above to test quickly
     if block_choose==0:white_status=1
     elif block_choose==1:blue_status=1
     elif block_choose==2:power_status=1
@@ -82,10 +82,10 @@ def gameloop():
 
     food_x_white=round(random.randrange(0,width-cell)/cell)*cell
     food_y_white=round(random.randrange(0,height-cell)/cell)*cell
-    
+
     food_x_blue=round(random.randrange(0,width-cell)/cell)*cell
     food_y_blue=round(random.randrange(0,height-cell)/cell)*cell
-    
+
     #adding powerup
     power_x=round(random.randrange(0,width-cell)/cell)*cell
     power_y=round(random.randrange(0,height-cell)/cell)*cell
@@ -108,7 +108,7 @@ def gameloop():
                 if(0<=i[0]<=900 and 0<=i[1]<=600):
                     remains.append(i)
             return remains
-    
+
 
     #adding bonus red blocks
     power_blocks=[];
@@ -119,7 +119,7 @@ def gameloop():
     while (not end) or godmode:
 
         time_passed=int(time.time()-static_time)
-        
+
         #to test new level change score counter =10
         score_counter=blen-1
 
@@ -145,13 +145,12 @@ def gameloop():
                     if snake_direction==0:bullet_blocks.append([x,y+5,snake_direction])
                     if snake_direction==1:bullet_blocks.append([x+5,y,snake_direction])
                     if snake_direction==2:bullet_blocks.append([x,y-5,snake_direction])
-                    if snake_direction==3:bullet_blocks.append([x-5,y,snake_direction])        
+                    if snake_direction==3:bullet_blocks.append([x-5,y,snake_direction])
+
+
         x+=x1;y+=y1
-        
-        
 
 
-        
         #fixes snake invisible issue
         if x>width-cell:#screen boundary condition
             x = 0
@@ -160,8 +159,8 @@ def gameloop():
         elif y > height-cell:
             y = 0
         elif y < 0:
-            y = height-cell 
-        
+            y = height
+
         disp.fill(black)
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
 
@@ -170,11 +169,11 @@ def gameloop():
              pygame.draw.rect(disp,white,[food_x_white,food_y_white,cell,cell])
 
         #displays blue box only if blue status is 1
-        if blue_status:                        
+        if blue_status:
             pygame.draw.rect(disp,blue,[food_x_blue,food_y_blue,cell,cell])
-        
+
         #displays power only if power status is 1
-        if  power_status:                        
+        if  power_status:
             pygame.draw.rect(disp,dyna_color,[power_x,power_y,cell,cell])
 
         dyna_color=(random.randrange(0,255),random.randrange(0,255),random.randrange(0,255))
@@ -183,8 +182,8 @@ def gameloop():
 
 
         #green deathboxes cuz they are posion to snakes
-        for i in range(len(death_blocks_y)):
-            pygame.draw.rect(disp,green,[death_blocks_x[i],death_blocks_y[i],cell,cell])
+        #for i in range(len(death_blocks_y)):
+            #pygame.draw.rect(disp,green,[death_blocks_x[i],death_blocks_y[i],cell,cell])
 
         #displays bullets
         for i in bullet_blocks:
@@ -229,7 +228,7 @@ def gameloop():
                 elif block_choose==1:blue_status=1
                 elif block_choose==2:power_status=1
                 else :pass
-                
+
                 food_x_white,food_y_white=createnewfood(body)
                 food_x_blue,food_y_blue=createnewfood(body)
                 power_x,power_y=createnewfood(body)
@@ -237,8 +236,8 @@ def gameloop():
 
             if (score_counter+1)%10==0 and score_counter!=0:
                 levelup=1
-            
-        
+
+
 
         elif food_x_white==x and food_y_white==y and white_status:
             #contact with food white
@@ -248,15 +247,15 @@ def gameloop():
                 print("check")
                 blen=1#reduces score by 3
             if snake_speed>30: snake_speed-=0.5;#slows the snake down
-        
+
         elif food_x_blue==x and food_y_blue==y and blue_status:
             #contact with food blue
             blue_status=0
             static_time=time.time()
-            
+
             #sets godmode to 1 invincible
             godmode=1
-            if snake_speed<30: snake_speed+=1;#speeds up the snake 
+            if snake_speed<30: snake_speed+=1;#speeds up the snake
 
         elif power_x==x and power_y==y and power_status:
             power_status=0
@@ -266,22 +265,20 @@ def gameloop():
             for i in range(20):
                 rx,ry=createnewfood(body)
                 power_blocks.append([rx,ry])
-    
+
         elif [x,y] in power_blocks:
                 blen+=1
                 red_counter+=1
-                power_blocks.remove([x,y])            
+                power_blocks.remove([x,y])
 
         if power_mode==0:power_blocks=[]
 
-        for i in range(len(death_blocks_y)):
-            if(death_blocks_x[i]==x and death_blocks_y[i]==y):end=1
 
         #waits for 5 secs turns godmode off
         if time_passed==5:
             power_mode=0
             godmode=0
-        
+
         #fixes godmode
         if godmode:end=0
         #each 10 points level increases and 4 death blocks each level are added
@@ -292,10 +289,10 @@ def gameloop():
                 #even death boxes have better spawns now
                 dbx,dby=createnewfood(body)
                 death_blocks_x.append(dbx)
-                death_blocks_y.append(dby)            
-        
+                death_blocks_y.append(dby)
 
-        #bullet collision    
+
+        #bullet collision
         for i in bullet_blocks:
             count=0
             while count<len(death_blocks_x):
@@ -306,7 +303,7 @@ def gameloop():
                     death_blocks_y.pop(count)
                     break
                 count+=1
-            
+
 
 
         #moves bullets
@@ -321,10 +318,10 @@ def gameloop():
                 i[0]-=3*snake_speed
 
         bullet_blocks=removebullets(bullet_blocks)
-             
+
         clk.tick(snake_speed)#fps
-    
-    
+
+
     clk.tick(snake_speed)
 
     disp.fill(black)
