@@ -20,15 +20,20 @@ def get_food_position(width, height, body):
         if [food_x, food_y] not in body:
             return food_x, food_y
 
-def gameloop():
+def gameloop(level):
     end=0
     x,y,x1,y1=width/2,height/2,0,0#x,y->head pos;x1,y1->change in pos
     snake_speed=10
-    level = 1
+    level = level
+    Obstacles=[[round(random.randrange(0,width-cell)/cell)*cell,
+    round(random.randrange(0,height-cell)/cell)*cell] for i in range(5)] if level == 2 else []
     body,blen=[],1
     clk=pygame.time.Clock()
     food_x, food_y= get_food_position(width,height, body)
     while not end:
+        if level == 1 and blen == 11:
+            end=1
+            gameloop(2)
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
                 end=1
@@ -45,10 +50,16 @@ def gameloop():
         if x>width or x<0 or y>height or y<0:#screen boundary condition
             break
         disp.fill(black)
+        for i in Obstacles:
+            pygame.draw.rect(disp,white,[i[0],i[1],cell,cell])
         pygame.draw.rect(disp,red,[food_x,food_y,cell,cell])
         head=[]
         head.append(x);head.append(y)
         body.append(head)#append new head to body
+        for obs in Obstacles:
+            if obs in body:
+                end=1
+                break
         for block in body[:blen-1]:
             if block==head:#snake head touches body
                 end=1
@@ -71,8 +82,6 @@ def gameloop():
 
             EAT_SOUND.play()
             if snake_speed<30: snake_speed+=0.5;
-            if(blen % 10 == 1):
-                level += 1
 
         clk.tick(snake_speed)#fps
     clk.tick(snake_speed)
@@ -81,11 +90,11 @@ def gameloop():
     END_SOUND.play()
     disp.blit(m,[(width/2)-40,height/2])
     f = open("score.txt","a")
-    f.write(str(blen-1)+"\n")
+    f.write(str(level)+":"+str(blen-1)+"\n")
     f.close()
     with open("score.txt", "r") as f:
         score = f.read() # Read all file in case values are not on a single line
-        score_ints = [ int(x) for x in score.split() ] # Convert strings to ints
+        score_ints = [ int(x[2:]) for x in score.split() if int(x[0]) == level ] # Convert strings to ints
     highscore = max(score_ints) # sum all elements of the list
     f_score=font_style.render("Score: "+str(blen-1),True,white)
     disp.blit(f_score,[(width/2)-30,(height/2)+27])
@@ -95,4 +104,4 @@ def gameloop():
     time.sleep(2)
     pygame.quit()
     quit()
-gameloop()
+gameloop(1)
